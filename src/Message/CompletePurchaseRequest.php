@@ -13,7 +13,16 @@ class CompletePurchaseRequest extends AbstractRequest
     {
         $this->guardParameters();
 
+        if (empty($_POST)){
+            $_POST = file_get_contents('php://input');
+            $_POST = json_decode($_POST,true);
+        }
+        
         $data = $this->httpRequest->request->all();
+        
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         $data['ComputedSignature'] = $this->signature(
             $this->getMerchantKey(),
